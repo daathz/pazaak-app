@@ -34,7 +34,7 @@
     {#if isButtonEnabled}
         <div
             class="button-container"
-            transition:fly="{{duration: 300, y: 200}}"
+            in:fly="{{duration: 300, y: 200}}"
         >
             <Button on:click={startGame}>
                 Start Game
