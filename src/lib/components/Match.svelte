@@ -2,7 +2,7 @@
     import { onMount } from 'svelte';
     import type { card } from '../data/types';
     import { randomBoolean, shuffle } from '../helpers/utils';
-    import {createEventDispatcher} from 'svelte';
+    import { createEventDispatcher } from 'svelte';
     import Card from './Card.svelte';
     import deck from '../data/deck-store';
     import Button from './UI/Button.svelte';
@@ -49,7 +49,11 @@
         if (toPlayerstable) {
             playersTable = [
                 ...playersTable,
-                { id: Math.random().toString(), type: 'main', value: drawedCard }
+                {
+                    id: Math.random().toString(),
+                    type: 'main',
+                    value: drawedCard
+                }
             ];
 
             playersScore += drawedCard;
@@ -58,7 +62,11 @@
         } else {
             aiTable = [
                 ...aiTable,
-                { id: Math.random().toString(), type: 'main', value: drawedCard }
+                {
+                    id: Math.random().toString(),
+                    type: 'main',
+                    value: drawedCard
+                }
             ];
             aiScore += drawedCard;
             playersTurn = true;
@@ -99,15 +107,9 @@
     <title>Match</title>
 </svelte:head>
 
-<Button on:click="{backToDeckEditor}">Back to Deck Editor</Button>
+<Button on:click={backToDeckEditor}>Back to Deck Editor</Button>
 
-
-<Table
-    table={aiTable}
-    score={aiScore}
-    scoreLabel="AI's score"
-    set={aiSet}
-/>
+<Table table={aiTable} score={aiScore} scoreLabel="AI's score" set={aiSet} />
 <Table
     table={playersTable}
     score={playersScore}
