@@ -2,6 +2,7 @@
     import { onMount } from 'svelte';
     import type { card } from '../data/types';
     import { shuffle } from '../helpers/utils';
+    import {createEventDispatcher} from 'svelte';
     import Card from './Card.svelte';
     import deck from '../data/deck-store';
     import Button from './UI/Button.svelte';
@@ -19,7 +20,9 @@
     let playedCardThisTurn = false;
     let playersScore = 0;
 
-    drawFromMainDeck();
+    const dispatch = createEventDispatcher();
+
+    drawFromMainDeck(true);
 
     onMount(() => {
         const unsubscribe = deck.subscribe(items => {
@@ -30,23 +33,28 @@
         unsubscribe();
     });
 
-    function drawFromMainDeck() {
+    function backToDeckEditor() {
+        dispatch('backtodeckeditor');
+    }
+
+    function drawFromMainDeck(toPlayerstable: boolean) {
         mainDeck = mainDeck.sort(shuffle);
         const drawedCard = mainDeck.splice(0, 1)[0];
-        playersTable = [
-            ...playersTable,
-            { id: Math.random().toString(), type: 'main', value: drawedCard },
-        ];
+        if (toPlayerstable) {
+            playersTable = [
+                ...playersTable,
+                { id: Math.random().toString(), type: 'main', value: drawedCard },
+            ];
 
-        playersTurn = true;
-        playersScore += drawedCard;
-
-        if (playersScore === 20) stand();
+            playersTurn = true;
+            playersScore += drawedCard;
+            if (playersScore === 20) stand();
+        }
     }
 
     function playCard(id: string) {
         if (playersTurn && !playedCardThisTurn) {
-            const playedCard: card = playersHand.find(card => card.id === id);
+            const playedCard = playersHand.find(card => card.id === id);
             playersHand = playersHand.filter(card => card.id !== id);
             playersTable = [...playersTable, playedCard];
             playedCardThisTurn = true;
@@ -61,8 +69,10 @@
 
     function endTurn() {
         if (playersScore <= 20) {
-            drawFromMainDeck();
+            drawFromMainDeck(true);
             playedCardThisTurn = false;
+        } else if (playersScore > 20) {
+            stand();
         }
     }
 
@@ -74,6 +84,8 @@
 <svelte:head>
     <title>Match</title>
 </svelte:head>
+
+<Button on:click="{backToDeckEditor}">Back to Deck Editor</Button>
 
 <span>Player's score: {playersScore}</span>
 <Table table={playersTable} />

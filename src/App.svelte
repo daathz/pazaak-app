@@ -10,7 +10,7 @@
     {#if mode === 'edit'}
         <EditDeck on:startgame={() => (mode = 'match')} />
     {:else if mode === 'match'}
-        <Match />
+        <Match on:backtodeckeditor={() => (mode = 'edit')} />
     {/if}
 </main>
 
