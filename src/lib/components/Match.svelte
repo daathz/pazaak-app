@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import type { card } from '../data/types';
-    import { shuffle } from '../helpers/utils';
+    import { randomBoolean, shuffle } from '../helpers/utils';
     import {createEventDispatcher} from 'svelte';
     import Card from './Card.svelte';
     import deck from '../data/deck-store';
@@ -16,13 +16,19 @@
     let playersSet = 0;
     let playersHand: card[] = [];
     let playersTable: card[] = [];
-    let playersTurn = false;
     let playedCardThisTurn = false;
     let playersScore = 0;
 
+    let aiSet = 0;
+    let aiHand: card[] = [];
+    let aiTable: card[] = [];
+    let aiScore = 0;
+
     const dispatch = createEventDispatcher();
 
-    drawFromMainDeck(true);
+    let playersTurn = randomBoolean();
+
+    drawFromMainDeck(playersTurn);
 
     onMount(() => {
         const unsubscribe = deck.subscribe(items => {
@@ -43,12 +49,20 @@
         if (toPlayerstable) {
             playersTable = [
                 ...playersTable,
-                { id: Math.random().toString(), type: 'main', value: drawedCard },
+                { id: Math.random().toString(), type: 'main', value: drawedCard }
             ];
 
-            playersTurn = true;
             playersScore += drawedCard;
+            playersTurn = true;
             if (playersScore === 20) stand();
+        } else {
+            aiTable = [
+                ...aiTable,
+                { id: Math.random().toString(), type: 'main', value: drawedCard }
+            ];
+            aiScore += drawedCard;
+            playersTurn = true;
+            drawFromMainDeck(true);
         }
     }
 
@@ -69,11 +83,11 @@
 
     function endTurn() {
         if (playersScore <= 20) {
-            drawFromMainDeck(true);
             playedCardThisTurn = false;
         } else if (playersScore > 20) {
             stand();
         }
+        drawFromMainDeck(false);
     }
 
     function stand() {
@@ -87,8 +101,19 @@
 
 <Button on:click="{backToDeckEditor}">Back to Deck Editor</Button>
 
-<span>Player's score: {playersScore}</span>
-<Table table={playersTable} />
+
+<Table
+    table={aiTable}
+    score={aiScore}
+    scoreLabel="AI's score"
+    set={aiSet}
+/>
+<Table
+    table={playersTable}
+    score={playersScore}
+    scoreLabel="Player's score"
+    set={playersSet}
+/>
 
 <div class="user-buttons">
     <Button on:click={endTurn} disabled={!playersTurn}>End turn</Button>
