@@ -36,6 +36,7 @@
         padding: 0.5rem;
         color: #000000;
         background-color: #fcfcfc;
+        cursor: pointer;
     }
 
     .card-inner {
@@ -67,6 +68,7 @@
         border-radius: 8px;
         display: flex;
         justify-content: center;
+        user-select: none;
     }
 
     .error {
