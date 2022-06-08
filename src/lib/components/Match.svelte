@@ -1,17 +1,14 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import type { card } from '../data/types';
-    import { randomBoolean, shuffle } from '../helpers/utils';
+    import { createMainDeck, randomBoolean, shuffle } from '../helpers/utils';
     import { createEventDispatcher } from 'svelte';
     import Card from './Card.svelte';
     import deck from '../data/deck-store';
     import Button from './UI/Button.svelte';
     import Table from './Table.svelte';
 
-    let mainDeck: number[] = Array.from(
-        { length: 40 },
-        (item, index) => (item = (index % 10) + 1)
-    );
+    let mainDeck = createMainDeck();
 
     let playersSet = 0;
     let playersHand: card[] = [];
@@ -109,32 +106,55 @@
 
 <Button on:click={backToDeckEditor}>Back to Deck Editor</Button>
 
-<Table table={aiTable} score={aiScore} scoreLabel="AI's score" set={aiSet} />
-<Table
-    table={playersTable}
-    score={playersScore}
-    scoreLabel="Player's score"
-    set={playersSet}
-/>
-
-<div class="user-buttons">
-    <Button on:click={endTurn} disabled={!playersTurn}>End turn</Button>
-    <Button on:click={stand} disabled={!playersTurn}>Stand</Button>
+<div class="tables">
+    <Table
+        table={playersTable}
+        score={playersScore}
+        scoreLabel="Player's score"
+        set={playersSet}
+    />
+    <Table
+        table={aiTable}
+        score={aiScore}
+        scoreLabel="AI's score"
+        set={aiSet}
+    />
 </div>
-<div class="hand">
-    {#each playersHand as { id, type, value } (id)}
-        <Card {type} {value} on:click={playCard.bind(this, id)} />
-    {/each}
+
+<div class="user-ui">
+    <div class="user-buttons">
+        <Button on:click={endTurn} disabled={!playersTurn}>End turn</Button>
+        <Button on:click={stand} disabled={!playersTurn}>Stand</Button>
+    </div>
+    <div class="hand">
+        {#each playersHand as { id, type, value } (id)}
+            <Card {type} {value} on:click={playCard.bind(this, id)} />
+        {/each}
+    </div>
 </div>
 
 <style>
-    .hand {
-        display: flex;
-        flex-direction: row;
+    .user-ui {
         position: absolute;
         bottom: 0;
         width: 100%;
+    }
+
+    .user-buttons, .hand {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
         align-items: center;
         justify-content: center;
+        margin: 0.5rem;
+    }
+
+    .hand {
+        margin-bottom: 0;
+    }
+
+    .tables {
+        display: flex;
+        flex-direction: row;
     }
 </style>
