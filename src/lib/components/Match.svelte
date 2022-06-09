@@ -141,17 +141,25 @@
         width: 100%;
     }
 
-    .user-buttons,
-    .hand {
+    .user-buttons {
         display: flex;
         flex-direction: row;
         width: 100%;
         align-items: center;
         justify-content: center;
         margin: 0.5rem;
+        gap: 0.5rem;
     }
 
     .hand {
+        margin-bottom: 0;
+        display: grid;
+        align-items: center;
+        justify-content: center;
+        grid-template-columns: 5rem 5rem 5rem 5rem;
+        gap: 0.5rem;
+        margin: auto;
+        margin-top: 0.5rem;
         margin-bottom: 0;
     }
 
