@@ -1,12 +1,11 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
+    import { createEventDispatcher, onMount } from 'svelte';
+    import deck from '../data/deck-store';
     import type { card } from '../data/types';
     import { createMainDeck, randomBoolean, shuffle } from '../helpers/utils';
-    import { createEventDispatcher } from 'svelte';
     import Card from './Card.svelte';
-    import deck from '../data/deck-store';
-    import Button from './UI/Button.svelte';
     import Table from './Table.svelte';
+    import Button from './UI/Button.svelte';
 
     let mainDeck = createMainDeck();
 
@@ -40,35 +39,37 @@
         dispatch('backtodeckeditor');
     }
 
-    function drawFromMainDeck(toPlayerstable: boolean) {
-        mainDeck = mainDeck.sort(shuffle);
-        const drawedCard = mainDeck.splice(0, 1)[0];
-        if (toPlayerstable) {
-            playersTable = [
-                ...playersTable,
-                {
-                    id: Math.random().toString(),
-                    type: 'main',
-                    value: drawedCard
-                }
-            ];
+    function drawFromMainDeck(toPlayersTable: boolean) {
+        setTimeout(() => {
+            mainDeck = mainDeck.sort(shuffle);
+            const drawedCard = mainDeck.splice(0, 1)[0];
+            if (toPlayersTable) {
+                playersTable = [
+                    ...playersTable,
+                    {
+                        id: Math.random().toString(),
+                        type: 'main',
+                        value: drawedCard
+                    }
+                ];
 
-            playersScore += drawedCard;
-            playersTurn = true;
-            if (playersScore === 20) stand();
-        } else {
-            aiTable = [
-                ...aiTable,
-                {
-                    id: Math.random().toString(),
-                    type: 'main',
-                    value: drawedCard
-                }
-            ];
-            aiScore += drawedCard;
-            playersTurn = true;
-            drawFromMainDeck(true);
-        }
+                playersScore += drawedCard;
+                playersTurn = true;
+                if (playersScore === 20) stand();
+            } else {
+                aiTable = [
+                    ...aiTable,
+                    {
+                        id: Math.random().toString(),
+                        type: 'main',
+                        value: drawedCard
+                    }
+                ];
+                aiScore += drawedCard;
+                playersTurn = true;
+                drawFromMainDeck(true);
+            }
+        }, 1500);
     }
 
     function playCard(id: string) {
@@ -140,7 +141,8 @@
         width: 100%;
     }
 
-    .user-buttons, .hand {
+    .user-buttons,
+    .hand {
         display: flex;
         flex-direction: row;
         width: 100%;
