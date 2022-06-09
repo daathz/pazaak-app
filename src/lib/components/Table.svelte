@@ -21,6 +21,12 @@
 <style>
     span {
         margin: 0.5rem;
+        margin-right: auto;
+        margin-left: auto;
+        text-align: center;
+        display: block;
+        width: 100%;
+        align-items: center;
     }
 
     span:first-child {
@@ -28,16 +34,14 @@
     }
 
     .table-ui {
-        display: flex;
-        flex-direction: column;
         width: 100%;
-        justify-content: center;
-        align-items: center;
     }
 
     .table {
         display: grid;
         grid-template-columns: 5rem 5rem 5rem;
         gap: 0.5rem;
+        width: 16rem;
+        margin: auto;
     }
 </style>
